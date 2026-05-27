@@ -1,8 +1,4 @@
-import type { CheckoutResult } from '../domain/checkout.types'
-
-interface Props {
-  result: CheckoutResult
-}
+import { useCheckoutFormStore } from '@/shared/store/checkout-form.store'
 
 function Row({ label, value, bold }: { label: string; value: number; bold?: boolean }) {
   return (
@@ -13,7 +9,10 @@ function Row({ label, value, bold }: { label: string; value: number; bold?: bool
   )
 }
 
-export default function CheckoutResult({ result }: Props) {
+export default function CheckoutResult() {
+  const result = useCheckoutFormStore((s) => s.result)
+  if (!result) return null
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-lg font-semibold text-gray-900">Order Summary</h2>

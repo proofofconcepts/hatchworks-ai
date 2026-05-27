@@ -1,31 +1,18 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { login } from '../application/auth.service'
-import { ApiError } from '@/shared/http/http-client'
+import { useLoginFormStore } from '@/shared/store/login-form.store'
 
 export default function LoginForm() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const { email, password, isLoading, formError, setEmail, setPassword, submit } =
+    useLoginFormStore()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setError(null)
-    setLoading(true)
-
-    try {
-      await login({ email, password })
-      router.push('/checkout')
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Something went wrong')
-    } finally {
-      setLoading(false)
-    }
+    const success = await submit()
+    if (success) router.push('/checkout')
   }
 
   return (
@@ -58,14 +45,14 @@ export default function LoginForm() {
         />
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {formError && <p className="text-sm text-red-600">{formError}</p>}
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={isLoading}
         className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
       >
-        {loading ? 'Signing in…' : 'Sign in'}
+        {isLoading ? 'Signing in…' : 'Sign in'}
       </button>
 
       <p className="text-center text-sm text-gray-500">

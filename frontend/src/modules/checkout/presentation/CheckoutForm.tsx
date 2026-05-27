@@ -1,55 +1,22 @@
 'use client'
 
-import { useState } from 'react'
-import { CheckoutItem, CheckoutResult } from '../domain/checkout.types'
-import { calculateCheckout } from '../domain/checkout.calculator'
-import { processCheckout } from '../application/checkout.service'
-import CheckoutResultComponent from './CheckoutResult'
-import { ApiError } from '@/shared/http/http-client'
-
-const emptyItem = (): CheckoutItem => ({ name: '', unitPrice: 0, quantity: 1 })
+import { useCheckoutFormStore } from '@/shared/store/checkout-form.store'
 
 export default function CheckoutForm() {
-  const [items, setItems] = useState<CheckoutItem[]>([emptyItem()])
-  const [result, setResult] = useState<CheckoutResult | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-
-  const preview = calculateCheckout(items.filter((i) => i.name && i.unitPrice > 0))
-
-  function updateItem(index: number, field: keyof CheckoutItem, value: string | number) {
-    setItems((prev) => prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)))
-  }
-
-  function addItem() {
-    setItems((prev) => [...prev, emptyItem()])
-  }
-
-  function removeItem(index: number) {
-    setItems((prev) => prev.filter((_, i) => i !== index))
-  }
+  const {
+    items,
+    preview,
+    isLoading,
+    formError,
+    addItem,
+    removeItem,
+    updateItem,
+    submit,
+  } = useCheckoutFormStore()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setError(null)
-    setResult(null)
-    setLoading(true)
-
-    const validItems = items.filter((i) => i.name && i.unitPrice > 0 && i.quantity >= 1)
-    if (validItems.length === 0) {
-      setError('Add at least one item with a name, price, and quantity.')
-      setLoading(false)
-      return
-    }
-
-    try {
-      const data = await processCheckout(validItems)
-      setResult(data)
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Something went wrong')
-    } finally {
-      setLoading(false)
-    }
+    await submit()
   }
 
   return (
@@ -122,18 +89,45 @@ export default function CheckoutForm() {
           </div>
         )}
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {formError && <p className="text-sm text-red-600">{formError}</p>}
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isLoading}
           className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
         >
-          {loading ? 'Processing…' : 'Process checkout'}
+          {isLoading ? 'Processing…' : 'Process checkout'}
         </button>
       </form>
 
-      {result && <CheckoutResultComponent result={result} />}
+      <CheckoutResultPanel />
+    </div>
+  )
+}
+
+function CheckoutResultPanel() {
+  const result = useCheckoutFormStore((s) => s.result)
+  if (!result) return null
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 className="mb-4 text-lg font-semibold text-gray-900">Order Summary</h2>
+      <div className="divide-y divide-gray-100">
+        <ResultRow label="Subtotal" value={result.subtotal} />
+        <ResultRow label="Taxes (13%)" value={result.taxes} />
+        {result.discount > 0 && <ResultRow label="Discount (10%)" value={-result.discount} />}
+        <ResultRow label="Total" value={result.total} bold />
+      </div>
+      <p className="mt-4 text-xs text-gray-400">Order ID: {result.id}</p>
+    </div>
+  )
+}
+
+function ResultRow({ label, value, bold }: { label: string; value: number; bold?: boolean }) {
+  return (
+    <div className={`flex justify-between py-2 ${bold ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
+      <span>{label}</span>
+      <span>${value.toFixed(2)}</span>
     </div>
   )
 }
