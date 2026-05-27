@@ -1,23 +1,14 @@
 'use client'
 
 import { create } from 'zustand'
-import { calculateCheckout } from '@/modules/checkout/domain/checkout.calculator'
 import { processCheckout } from '@/modules/checkout/application/checkout.service'
-import type { CheckoutItem, CheckoutResult, CheckoutTotals } from '@/modules/checkout/domain/checkout.types'
+import type { CheckoutItem, CheckoutResult } from '@/modules/checkout/domain/checkout.types'
 import { ApiError } from '@/shared/http/http-client'
 
 const emptyItem = (): CheckoutItem => ({ name: '', unitPrice: 0, quantity: 1 })
 
-const emptyPreview = (): CheckoutTotals => ({ subtotal: 0, taxes: 0, discount: 0, total: 0 })
-
-function computePreview(items: CheckoutItem[]): CheckoutTotals {
-  const valid = items.filter((i) => i.name && i.unitPrice > 0)
-  return valid.length > 0 ? calculateCheckout(valid) : emptyPreview()
-}
-
 interface CheckoutFormState {
   items: CheckoutItem[]
-  preview: CheckoutTotals
   result: CheckoutResult | null
   isLoading: boolean
   formError: string | null
@@ -31,27 +22,19 @@ interface CheckoutFormState {
 
 export const useCheckoutFormStore = create<CheckoutFormState>()((set, get) => ({
   items: [emptyItem()],
-  preview: emptyPreview(),
   result: null,
   isLoading: false,
   formError: null,
 
-  addItem: () => {
-    const items = [...get().items, emptyItem()]
-    set({ items, preview: computePreview(items) })
-  },
+  addItem: () => set((s) => ({ items: [...s.items, emptyItem()] })),
 
-  removeItem: (index) => {
-    const items = get().items.filter((_, i) => i !== index)
-    set({ items, preview: computePreview(items) })
-  },
+  removeItem: (index) =>
+    set((s) => ({ items: s.items.filter((_, i) => i !== index) })),
 
-  updateItem: (index, field, value) => {
-    const items = get().items.map((item, i) =>
-      i === index ? { ...item, [field]: value } : item,
-    )
-    set({ items, preview: computePreview(items) })
-  },
+  updateItem: (index, field, value) =>
+    set((s) => ({
+      items: s.items.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
+    })),
 
   submit: async () => {
     const validItems = get().items.filter(
@@ -76,6 +59,5 @@ export const useCheckoutFormStore = create<CheckoutFormState>()((set, get) => ({
     }
   },
 
-  resetForm: () =>
-    set({ items: [emptyItem()], preview: emptyPreview(), result: null, formError: null }),
+  resetForm: () => set({ items: [emptyItem()], result: null, formError: null }),
 }))

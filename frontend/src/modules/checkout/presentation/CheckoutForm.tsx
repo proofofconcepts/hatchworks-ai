@@ -5,7 +5,6 @@ import { useCheckoutFormStore } from '@/shared/store/checkout-form.store'
 export default function CheckoutForm() {
   const {
     items,
-    preview,
     isLoading,
     formError,
     addItem,
@@ -79,15 +78,6 @@ export default function CheckoutForm() {
         >
           + Add item
         </button>
-
-        {preview.subtotal > 0 && (
-          <div className="rounded-lg bg-gray-50 p-3 text-sm text-gray-600 space-y-1">
-            <div className="flex justify-between"><span>Subtotal</span><span>${preview.subtotal.toFixed(2)}</span></div>
-            <div className="flex justify-between"><span>Taxes (13%)</span><span>${preview.taxes.toFixed(2)}</span></div>
-            {preview.discount > 0 && <div className="flex justify-between text-green-600"><span>Discount (10%)</span><span>−${preview.discount.toFixed(2)}</span></div>}
-            <div className="flex justify-between font-semibold text-gray-900 border-t border-gray-200 pt-1"><span>Total</span><span>${preview.total.toFixed(2)}</span></div>
-          </div>
-        )}
 
         {formError && <p className="text-sm text-red-600">{formError}</p>}
 
