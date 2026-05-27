@@ -1,6 +1,6 @@
 'use client'
 
-import { useCheckoutFormStore } from '@/shared/store/checkout-form.store'
+import { useCheckoutFormStore } from '@/modules/checkout/presentation/checkout-form.store'
 
 function Row({ label, value, bold }: { label: string; value: number; bold?: boolean }) {
   return (

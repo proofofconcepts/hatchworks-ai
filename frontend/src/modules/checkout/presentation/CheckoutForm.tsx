@@ -1,6 +1,6 @@
 'use client'
 
-import { useCheckoutFormStore } from '@/shared/store/checkout-form.store'
+import { useCheckoutFormStore } from '@/modules/checkout/presentation/checkout-form.store'
 
 export default function CheckoutForm() {
   const {

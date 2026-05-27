@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useLoginFormStore } from '@/shared/store/login-form.store'
+import { useLoginFormStore } from '@/modules/auth/presentation/login-form.store'
 
 export default function LoginForm() {
   const router = useRouter()

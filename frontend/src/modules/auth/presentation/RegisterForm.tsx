@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useRegisterFormStore, PASSWORD_MIN_LENGTH } from '@/shared/store/register-form.store'
+import { useRegisterFormStore, PASSWORD_MIN_LENGTH } from '@/modules/auth/presentation/register-form.store'
 
 export default function RegisterForm() {
   const router = useRouter()
