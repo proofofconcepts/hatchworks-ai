@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug NestJS",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug"],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/.env",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"],
+      "console": "integratedTerminal",
+      "restart": true
+    }
+  ]
+}

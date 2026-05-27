@@ -15,35 +15,5 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  migration:
-    build:
-      context: .
-      dockerfile: Dockerfile.migration
-    container_name: checkout_migration
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://checkout_user:checkout_pass@postgres:5432/checkout_db
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: checkout_app
-    depends_on:
-      migration:
-        condition: service_completed_successfully
-    environment:
-      NODE_ENV: production
-      APP_PORT: 3000
-      DATABASE_URL: postgresql://checkout_user:checkout_pass@postgres:5432/checkout_db
-      JWT_SECRET: ${JWT_SECRET:-super-secret-key-must-be-at-least-32-chars}
-      JWT_EXPIRATION: 24h
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
-
 volumes:
   postgres_data:
