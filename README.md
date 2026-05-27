@@ -4,6 +4,19 @@
 
 ---
 
+## Live Demo
+
+Both services are deployed on **Render**.
+
+| | URL |
+|---|---|
+| **Frontend** | https://hatchworks-ai-frontend.onrender.com |
+| **Backend API (Swagger)** | https://hatchworks-ai.onrender.com/api/docs |
+
+> Render free-tier services spin down after inactivity — the first request may take 30–60 seconds to cold-start.
+
+---
+
 ## Implementation Summary
 
 ### Claude Workflow
