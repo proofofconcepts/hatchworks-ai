@@ -4,6 +4,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AppConfigService } from './config/app.config';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
+import { HealthController } from './shared/health/health.controller';
 import { PrismaModule } from './shared/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CheckoutModule } from './modules/checkout/checkout.module';
@@ -15,6 +16,7 @@ import { CheckoutModule } from './modules/checkout/checkout.module';
     AuthModule,
     CheckoutModule,
   ],
+  controllers: [HealthController],
   providers: [
     AppConfigService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
