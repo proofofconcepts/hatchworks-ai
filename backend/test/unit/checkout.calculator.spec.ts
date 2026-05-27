@@ -1,4 +1,4 @@
-import { calculateCheckout } from './checkout.calculator';
+import { calculateCheckout } from '../../src/modules/checkout/domain/checkout.calculator';
 
 describe('calculateCheckout', () => {
   it('computes subtotal as sum of unit_price × quantity', () => {

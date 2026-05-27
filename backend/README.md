@@ -196,7 +196,6 @@ All monetary values are rounded to two decimal places.
 | `npm run build` | Compile TypeScript to `dist/` |
 | `npm run test` | Run unit tests |
 | `npm run test:cov` | Run unit tests with coverage report |
-| `npm run test:e2e` | Run end-to-end tests |
 | `npm run lint` | Lint and auto-fix source files |
 | `npm run format` | Format source files with Prettier |
 
