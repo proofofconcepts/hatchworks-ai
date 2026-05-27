@@ -1,0 +1,47 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  checkouts Checkout[]
+
+  @@index([email])
+}
+
+model Checkout {
+  id        String         @id @default(cuid())
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subtotal  Decimal        @db.Decimal(10, 2)
+  taxes     Decimal        @db.Decimal(10, 2)
+  discount  Decimal        @db.Decimal(10, 2)
+  total     Decimal        @db.Decimal(10, 2)
+  createdAt DateTime       @default(now())
+
+  items CheckoutItem[]
+
+  @@index([userId])
+}
+
+model CheckoutItem {
+  id         String   @id @default(cuid())
+  checkoutId String
+  checkout   Checkout @relation(fields: [checkoutId], references: [id], onDelete: Cascade)
+  name       String
+  unitPrice  Decimal  @db.Decimal(10, 2)
+  quantity   Int
+  lineTotal  Decimal  @db.Decimal(10, 2)
+
+  @@index([checkoutId])
+}
