@@ -92,17 +92,9 @@ docker build -t checkout-service .
 docker compose up -d
 ```
 
-### 3. Run migrations
+### 3. Run the application
 
-```bash
-docker build -t checkout-migration -f Dockerfile.migration .
-docker run --rm \
-  --network host \
-  -e DATABASE_URL=postgresql://checkout_user:checkout_pass@localhost:5432/checkout_db \
-  checkout-migration
-```
-
-### 4. Run the application
+Migrations run automatically on startup via `prisma migrate deploy`.
 
 ```bash
 docker run -p 3000:3000 \
